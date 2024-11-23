@@ -1,61 +1,247 @@
 "use client"
 
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { ChevronLeft, ChevronRight, Quote, Star, Building2, Target, Trophy } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 const testimonials = [
   {
     name: 'Dr. Emily Chen',
     role: 'CTO, AI Innovations Inc.',
-    avatar: '/placeholder.svg?height=100&width=100',
-    content: 'John\'s expertise in AI and machine learning is truly exceptional. His contributions to our voice cloning project were invaluable and helped us achieve breakthrough results.',
+    avatar: '/avatars/emily-chen.jpg',
+    content: 'Shaquille\'s expertise in AI and machine learning is truly exceptional. His contributions to our voice cloning project were invaluable and helped us achieve breakthrough results.',
+    company: 'AI Innovations Inc.',
+    project: 'Voice Cloning System',
+    impact: 'Reduced inference time by 75%',
+    rating: 5,
+    duration: '6 months',
+    achievements: [
+      'Optimized model performance',
+      'Implemented real-time processing',
+      'Improved voice quality'
+    ],
+    color: 'from-blue-500/20 to-purple-500/20'
   },
   {
     name: 'Michael Rodriguez',
     role: 'Lead Data Scientist, TechCorp',
-    avatar: '/placeholder.svg?height=100&width=100',
-    content: 'Working with John was a game-changer for our team. His deep understanding of complex ML algorithms and ability to implement them efficiently set new standards for our projects.',
+    avatar: '/avatars/michael-rodriguez.jpg',
+    content: 'Working with Shaquille was a game-changer for our team. His deep understanding of complex ML algorithms and ability to implement them efficiently set new standards for our projects.',
+    company: 'TechCorp',
+    project: 'ML Infrastructure Scaling',
+    impact: '40% cost reduction',
+    rating: 5,
+    duration: '8 months',
+    achievements: [
+      'Automated deployment pipeline',
+      'Reduced operational costs',
+      'Improved model monitoring'
+    ],
+    color: 'from-green-500/20 to-emerald-500/20'
   },
   {
     name: 'Sarah Thompson',
     role: 'VP of Engineering, DataTech Solutions',
-    avatar: '/placeholder.svg?height=100&width=100',
-    content: 'John\'s work on our data pipeline optimization was outstanding. His innovative approach not only solved our immediate challenges but also set us up for future scalability.',
-  },
+    avatar: '/avatars/sarah-thompson.jpg',
+    content: 'Shaquille\'s work on our data pipeline optimization was outstanding. His innovative approach not only solved our immediate challenges but also set us up for future scalability.',
+    company: 'DataTech Solutions',
+    project: 'Data Pipeline Optimization',
+    impact: '10x throughput increase',
+    rating: 5,
+    duration: '4 months',
+    achievements: [
+      'Enhanced data processing',
+      'Implemented real-time analytics',
+      'Improved system reliability'
+    ],
+    color: 'from-orange-500/20 to-red-500/20'
+  }
 ]
 
 const Testimonials = () => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [direction, setDirection] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      scale: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+      scale: 0.95
+    })
+  }
+
+  const swipeConfidenceThreshold = 10000
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity
+  }
+
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection)
+    setActiveIndex((prevIndex) => {
+      let newIndex = prevIndex + newDirection
+      if (newIndex < 0) newIndex = testimonials.length - 1
+      if (newIndex >= testimonials.length) newIndex = 0
+      return newIndex
+    })
+  }
+
   return (
-    <section id="testimonials" className="py-20 bg-background">
+    <section id="testimonials" className="py-20 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Testimonials</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
+        <h2 className="text-3xl font-bold text-center mb-12">Client Testimonials</h2>
+        
+        <div className="relative h-[600px]">
+          <AnimatePresence initial={false} custom={direction}>
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              key={activeIndex}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 },
+                scale: { duration: 0.2 }
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
+              onDragEnd={(e, { offset, velocity }) => {
+                const swipe = swipePower(offset.x, velocity.x)
+                if (swipe < -swipeConfidenceThreshold) {
+                  paginate(1)
+                } else if (swipe > swipeConfidenceThreshold) {
+                  paginate(-1)
+                }
+              }}
+              className="absolute w-full"
+              onHoverStart={() => setIsHovered(true)}
+              onHoverEnd={() => setIsHovered(false)}
             >
-              <Card className="h-full flex flex-col">
-                <CardContent className="pt-6">
-                  <div className="flex items-center mb-4">
-                    <Avatar className="h-10 w-10 mr-4">
-                      <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                      <AvatarFallback>{testimonial.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+              <Card 
+                className={`bg-gradient-to-r ${testimonials[activeIndex].color} p-8 max-w-4xl mx-auto transform transition-all duration-300 ${
+                  isHovered ? 'scale-[1.02]' : ''
+                }`}
+              >
+                <CardContent className="relative">
+                  <Quote className="absolute text-primary/20 h-24 w-24 -top-4 -left-4 -z-10" />
+                  
+                  <div className="grid md:grid-cols-[1fr,2fr] gap-8">
+                    <div className="text-center md:text-left">
+                      <Avatar className="h-24 w-24 mx-auto md:mx-0 mb-4 ring-2 ring-primary/20">
+                        <AvatarImage src={testimonials[activeIndex].avatar} alt={testimonials[activeIndex].name} />
+                        <AvatarFallback>{testimonials[activeIndex].name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      </Avatar>
+                      <h3 className="font-semibold text-xl mb-1">{testimonials[activeIndex].name}</h3>
+                      <p className="text-muted-foreground mb-2">{testimonials[activeIndex].role}</p>
+                      <div className="flex items-center justify-center md:justify-start gap-1 mb-2">
+                        {[...Array(testimonials[activeIndex].rating)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-muted-foreground">
+                        <Building2 className="h-4 w-4" />
+                        <p>{testimonials[activeIndex].company}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <blockquote className="text-lg italic relative">
+                        <Quote className="absolute -left-4 -top-2 h-4 w-4 text-primary/40 transform -scale-x-100" />
+                        {testimonials[activeIndex].content}
+                        <Quote className="absolute -right-4 -bottom-2 h-4 w-4 text-primary/40" />
+                      </blockquote>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-background/50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Target className="h-4 w-4 text-primary" />
+                            <p className="text-sm font-medium">Project</p>
+                          </div>
+                          <p className="text-muted-foreground">{testimonials[activeIndex].project}</p>
+                        </div>
+                        <div className="bg-background/50 p-4 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Trophy className="h-4 w-4 text-primary" />
+                            <p className="text-sm font-medium">Impact</p>
+                          </div>
+                          <p className="text-muted-foreground">{testimonials[activeIndex].impact}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-background/50 p-4 rounded-lg">
+                        <h4 className="font-medium mb-2">Key Achievements</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {testimonials[activeIndex].achievements.map((achievement, i) => (
+                            <Badge 
+                              key={i}
+                              variant="outline"
+                              className="bg-background/50"
+                            >
+                              {achievement}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">{testimonial.content}</p>
                 </CardContent>
               </Card>
             </motion.div>
-          ))}
+          </AnimatePresence>
+        </div>
+
+        <div className="flex justify-center gap-4 mt-8">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => paginate(-1)}
+            className="rounded-full hover:scale-110 transition-transform"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex gap-2">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setDirection(index > activeIndex ? 1 : -1)
+                  setActiveIndex(index)
+                }}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === activeIndex 
+                    ? 'bg-primary scale-125' 
+                    : 'bg-primary/20 hover:bg-primary/40'
+                }`}
+              />
+            ))}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => paginate(1)}
+            className="rounded-full hover:scale-110 transition-transform"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>

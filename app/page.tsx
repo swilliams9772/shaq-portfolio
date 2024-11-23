@@ -1,38 +1,63 @@
-import React from 'react'
-import { ThemeProvider } from '@/components/theme-provider'
-import Header from '@/components/Header'
-import Hero from '@/components/Hero'
-import Skills from '@/components/Skills'
-import Experience from '@/components/Experience'
-import Projects from '@/components/Projects'
-import CaseStudies from '@/components/CaseStudies'
-import Testimonials from '@/components/Testimonials'
-import Publications from '@/components/Publications'
-import Blog from '@/components/Blog'
-import Education from '@/components/Education'
-import Contact from '@/components/Contact'
-import Footer from '@/components/Footer'
+"use client"
+
+import React, { Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import { ScrollProgress } from '@/components/ui/scroll-progress'
+import { ScrollToTop } from '@/components/ui/scroll-to-top'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+
+// Dynamically import components to avoid hydration issues
+const Header = dynamic(() => import('@/components/Header'), { ssr: true })
+const Hero = dynamic(() => import('@/components/Hero'), { ssr: true })
+const Skills = dynamic(() => import('@/components/Skills'), { ssr: true })
+const Experience = dynamic(() => import('@/components/Experience'), { ssr: true })
+const Projects = dynamic(() => import('@/components/Projects'), { ssr: true })
+const CaseStudies = dynamic(() => import('@/components/CaseStudies'), { ssr: true })
+const Publications = dynamic(() => import('@/components/Publications'), { ssr: true })
+const Education = dynamic(() => import('@/components/Education'), { ssr: true })
+const Contributions = dynamic(() => import('@/components/Contributions'), { ssr: true })
+const Contact = dynamic(() => import('@/components/Contact'), { ssr: true })
+const Footer = dynamic(() => import('@/components/Footer'), { ssr: true })
+
+const Loading = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <LoadingSpinner size="lg" />
+  </div>
+)
 
 export default function PortfolioPage() {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return <Loading />
+  }
+
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <>
+      <ScrollProgress />
       <div className="min-h-screen bg-background text-foreground">
         <Header />
         <main>
           <Hero />
           <Skills />
           <Experience />
-          <Projects />
+          <Suspense fallback={<Loading />}>
+            <Projects />
+          </Suspense>
           <CaseStudies />
-          <Testimonials />
           <Publications />
-          <Blog />
           <Education />
+          <Contributions />
           <Contact />
         </main>
         <Footer />
       </div>
-    </ThemeProvider>
+      <ScrollToTop />
+    </>
   )
 }
 

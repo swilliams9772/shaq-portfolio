@@ -9,29 +9,38 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Github, ExternalLink, Play, Pause, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Github, ExternalLink, Play, Pause, Eye, ChevronLeft, ChevronRight } from 'lucide-react'
+import { sortProjects, filterProjects } from '@/lib/utils/project-utils'
+import type { Project } from '@/types'
 
 const projects = [
   {
-    title: 'Voice Cloning System',
-    category: 'Audio Processing',
+    title: 'Voice Cloning & Audio Processing Suite',
+    category: 'Audio Processing & AI',
     difficulty: 5,
-    completionDate: '2023-05-15',
+    completionDate: '2023',
     teamSize: 3,
-    technologies: ['PyTorch', 'FastAPI', 'React'],
-    impact: '5000+ active users',
-    github: 'https://github.com/username/voice-cloning',
+    technologies: ['TensorFlow TTS', 'PyTorch', 'Whisper', 'FastAPI', 'React'],
+    impact: 'Enabled high-fidelity audio synthesis for accessibility tools',
+    github: 'https://github.com/swilliams9772/voice-clone',
     demo: 'https://voice-clone-demo.com',
-    challenges: 'Optimizing model for real-time inference on consumer hardware',
-    achievements: 'Featured in AI research conference',
-    videoPreview: 'https://example.com/voice-cloning-preview.mp4',
-    description: 'A cutting-edge voice cloning system that allows users to create synthetic voices that sound remarkably similar to a target speaker. This project leverages deep learning techniques to analyze and reproduce the unique characteristics of a person\'s voice.',
+    challenges: 'Optimizing real-time performance and maintaining voice fidelity',
+    achievements: 'Successfully implemented one-shot voice cloning with high accuracy',
+    description: 'Comprehensive audio processing system including real-time voice cloning, multilingual transcription, and speaker diarization.',
     featured: true,
-    images: [
-      '/placeholder.svg?height=400&width=600',
-      '/placeholder.svg?height=400&width=600',
-      '/placeholder.svg?height=400&width=600',
-    ],
+  },
+  {
+    title: 'Community Grant Management System',
+    category: 'Full-Stack Development',
+    difficulty: 4,
+    completionDate: '2023',
+    teamSize: 2,
+    technologies: ['Next.js', 'PostgreSQL', 'AWS', 'TypeScript'],
+    impact: 'Optimized fund allocation for 100+ community projects',
+    github: 'https://github.com/swilliams9772/grant-manager',
+    challenges: 'Building complex reporting and impact assessment features',
+    achievements: 'Improved grant distribution efficiency by 40%',
+    description: 'Grant tracking and impact assessment system for health, education, and social justice initiatives.',
   },
   {
     title: 'DALL-E 2 PyTorch Implementation',
@@ -110,44 +119,62 @@ const projects = [
       '/placeholder.svg?height=400&width=600',
     ],
   },
+  {
+    title: 'Autonomous UAV Fleet',
+    category: 'Robotics & IoT',
+    difficulty: 5,
+    completionDate: '2019-Present',
+    teamSize: 1,
+    technologies: ['Raspberry Pi', 'Arduino', 'Lidar', 'Python'],
+    impact: 'Created fully autonomous fleet of UAVs and model cars',
+    github: 'https://github.com/shaqwilliams/uav-fleet',
+    challenges: 'Integrating multiple hardware components and ensuring reliable autonomous operation',
+    achievements: 'Successfully implemented advanced autonomous navigation systems',
+    description: 'A personal project involving the design and construction of autonomous UAVs and model cars. This project integrates various technologies including Raspberry Pi, Arduino, and Lidar cameras to create a fleet of self-operating vehicles.',
+    featured: true,
+    images: [
+      '/placeholder.svg?height=400&width=600',
+      '/placeholder.svg?height=400&width=600',
+      '/placeholder.svg?height=400&width=600',
+    ],
+  },
 ]
+
+interface ProjectFilter {
+  category: string
+  technology: string
+  difficulty: string
+}
 
 const Projects = () => {
   const [activeVideo, setActiveVideo] = useState<string | null>(null)
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null)
-  const [filter, setFilter] = useState({ category: 'All', technology: 'All', difficulty: 'All' })
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [filter, setFilter] = useState<ProjectFilter>({ 
+    category: 'All', 
+    technology: 'All', 
+    difficulty: 'All' 
+  })
   const [searchTerm, setSearchTerm] = useState('')
   const [sortOption, setSortOption] = useState('date')
   const [currentPage, setCurrentPage] = useState(1)
+  const [displayedProjects, setDisplayedProjects] = useState(projects)
   const projectsPerPage = 6
 
-  const filteredAndSortedProjects = projects
-    .filter(project => 
-      (filter.category === 'All' || project.category === filter.category) &&
-      (filter.technology === 'All' || project.technologies.includes(filter.technology)) &&
-      (filter.difficulty === 'All' || project.difficulty === parseInt(filter.difficulty)) &&
-      (project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase())))
-    )
-    .sort((a, b) => {
-      switch (sortOption) {
-        case 'date':
-          return new Date(b.completionDate).getTime() - new Date(a.completionDate).getTime()
-        case 'difficulty':
-          return b.difficulty - a.difficulty
-        case 'impact':
-          return b.impact.localeCompare(a.impact)
-        default:
-          return 0
-      }
-    })
+  useEffect(() => {
+    const sorted = sortProjects(projects, sortOption)
+    const filtered = filterProjects(sorted, filter, searchTerm)
+    setDisplayedProjects(filtered)
+    setCurrentPage(1) // Reset to first page when filter changes
+  }, [sortOption, filter, searchTerm])
 
   const indexOfLastProject = currentPage * projectsPerPage
   const indexOfFirstProject = indexOfLastProject - projectsPerPage
-  const currentProjects = filteredAndSortedProjects.slice(indexOfFirstProject, indexOfLastProject)
+  const currentProjects = displayedProjects.slice(indexOfFirstProject, indexOfLastProject)
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+  const paginate = (pageNumber: number) => {
+    if (pageNumber < 1 || pageNumber > Math.ceil(displayedProjects.length / projectsPerPage)) return
+    setCurrentPage(pageNumber)
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -171,9 +198,9 @@ const Projects = () => {
     },
   }
 
-  const categories = ['All', ...new Set(projects.map(p => p.category))]
-  const technologies = ['All', ...new Set(projects.flatMap(p => p.technologies))]
-  const difficulties = ['All', ...new Set(projects.map(p => p.difficulty.toString()))]
+  const categories = ['All', ...Array.from(new Set(projects.map(p => p.category)))]
+  const technologies = ['All', ...Array.from(new Set(projects.flatMap(p => p.technologies)))]
+  const difficulties = ['All', ...Array.from(new Set(projects.map(p => p.difficulty.toString())))]
 
   const featuredProject = projects.find(p => p.featured)
 
@@ -185,37 +212,50 @@ const Projects = () => {
         {featuredProject && (
           <div className="mb-12">
             <h3 className="text-2xl font-bold mb-4">Featured Project</h3>
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden bg-gradient-to-r from-primary/5 to-secondary/5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative aspect-video">
                   <video
                     src={featuredProject.videoPreview}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                     loop
                     muted
                     playsInline
                     autoPlay
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
                 <div className="p-6">
                   <CardTitle className="mb-2">{featuredProject.title}</CardTitle>
-                  <Badge className="mb-4">{featuredProject.category}</Badge>
+                  <Badge className="mb-4 bg-primary/10">{featuredProject.category}</Badge>
                   <p className="text-muted-foreground mb-4">{featuredProject.description}</p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {featuredProject.technologies.map((tech) => (
-                      <Badge key={tech} variant="outline">{tech}</Badge>
+                      <Badge key={tech} variant="outline" className="bg-background/50">
+                        {tech}
+                      </Badge>
                     ))}
                   </div>
                   <div className="flex gap-4">
                     <Button asChild>
-                      <a href={featuredProject.github} target="_blank" rel="noopener noreferrer">
-                        <Github className="mr-2 h-4 w-4" /> GitHub
+                      <a 
+                        href={featuredProject.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        <Github className="h-4 w-4" /> GitHub
                       </a>
                     </Button>
                     {featuredProject.demo && (
                       <Button asChild variant="outline">
-                        <a href={featuredProject.demo} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+                        <a 
+                          href={featuredProject.demo} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink className="h-4 w-4" /> Live Demo
                         </a>
                       </Button>
                     )}
@@ -227,47 +267,51 @@ const Projects = () => {
         )}
 
         <div className="flex flex-wrap gap-4 mb-8">
-          <Select onValueChange={(value) => setFilter(prev => ({ ...prev, category: value }))}>
+          <Select 
+            onValueChange={(value) => setFilter(prev => ({ ...prev, category: value }))}
+            defaultValue="All"
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          <Select onValueChange={(value) => setFilter(prev => ({ ...prev, technology: value }))}>
+          <Select 
+            onValueChange={(value) => setFilter(prev => ({ ...prev, technology: value }))}
+            defaultValue="All"
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Technology" />
             </SelectTrigger>
             <SelectContent>
               {technologies.map((tech) => (
-                <SelectItem key={tech} value={tech}>{tech}</SelectItem>
+                <SelectItem key={tech} value={tech}>
+                  {tech}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          <Select onValueChange={(value) => setFilter(prev => ({ ...prev, difficulty: value }))}>
+          <Select 
+            onValueChange={(value) => setFilter(prev => ({ ...prev, difficulty: value }))}
+            defaultValue="All"
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Difficulty" />
             </SelectTrigger>
             <SelectContent>
-              {difficulties.map((difficulty) => (
-                <SelectItem key={difficulty} value={difficulty}>{difficulty === 'All' ? 'All' : `★`.repeat(parseInt(difficulty))}</SelectItem>
+              {difficulties.map((level) => (
+                <SelectItem key={level} value={level}>
+                  {level === 'All' ? 'All Levels' : `Level ${level}`}
+                </SelectItem>
               ))}
-            </SelectContent>
-          </Select>
-
-          <Select onValueChange={(value) => setSortOption(value)}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="date">Date</SelectItem>
-              <SelectItem value="difficulty">Difficulty</SelectItem>
-              <SelectItem value="impact">Impact</SelectItem>
             </SelectContent>
           </Select>
 
@@ -290,23 +334,21 @@ const Projects = () => {
         >
           {currentProjects.map((project, index) => (
             <motion.div
-              key={index}
+              key={project.title}
               variants={itemVariants}
-              className="flex flex-col h-full"
+              whileHover={{ scale: 1.02 }}
+              className="transform transition-all duration-300"
             >
-              <Card 
-                className="h-full flex flex-col transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105"
-                onClick={() => setSelectedProject(project)}
-              >
+              <Card className="h-full flex flex-col bg-gradient-to-r from-primary/5 to-secondary/5">
                 <CardHeader>
                   <CardTitle>{project.title}</CardTitle>
-                  <Badge>{project.category}</Badge>
+                  <Badge className="w-fit">{project.category}</Badge>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                  <div className="relative aspect-video mb-4">
+                  <div className="relative aspect-video mb-4 rounded-lg overflow-hidden">
                     <video
                       src={project.videoPreview}
-                      className="w-full h-full object-cover rounded-md"
+                      className="w-full h-full object-cover"
                       loop
                       muted
                       playsInline
@@ -319,29 +361,43 @@ const Projects = () => {
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                          className="absolute inset-0 flex items-center justify-center bg-black/50"
                         >
                           {activeVideo === project.title ? (
-                            <Pause className="w-12 h-12 text-white" />
+                            <Play className="h-12 w-12 text-white" />
                           ) : (
-                            <Play className="w-12 h-12 text-white" />
+                            <Pause className="h-12 w-12 text-white" />
                           )}
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
-                  <p className="text-muted-foreground mb-2">Difficulty: {'★'.repeat(project.difficulty)}</p>
-                  <p className="text-m
-uted-foreground mb-2">Completed: {project.completionDate}</p>
-                  <p className="text-muted-foreground mb-4">Team Size: {project.teamSize}</p>
+                  <p className="text-muted-foreground mb-2">
+                    Difficulty: {'★'.repeat(project.difficulty)}
+                  </p>
+                  <p className="text-muted-foreground mb-2">
+                    Completed: {project.completionDate}
+                  </p>
+                  <p className="text-muted-foreground mb-4">
+                    Team Size: {project.teamSize}
+                  </p>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.technologies.map((tech) => (
-                      <Badge key={tech} variant="outline">{tech}</Badge>
+                      <Badge key={tech} variant="outline" className="bg-background/50">
+                        {tech}
+                      </Badge>
                     ))}
                   </div>
                 </CardContent>
                 <CardFooter className="mt-auto">
-                  <Button variant="outline" size="sm" className="w-full">View Details</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    View Details
+                  </Button>
                 </CardFooter>
               </Card>
             </motion.div>
@@ -353,20 +409,22 @@ uted-foreground mb-2">Completed: {project.completionDate}</p>
             variant="outline"
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
+            className="flex items-center gap-2"
           >
-            <ChevronLeft className="h-4 w-4 mr-2" />
+            <ChevronLeft className="h-4 w-4" />
             Previous
           </Button>
           <span className="mx-4 flex items-center">
-            Page {currentPage} of {Math.ceil(filteredAndSortedProjects.length / projectsPerPage)}
+            Page {currentPage} of {Math.ceil(displayedProjects.length / projectsPerPage)}
           </span>
           <Button
             variant="outline"
             onClick={() => paginate(currentPage + 1)}
-            disabled={indexOfLastProject >= filteredAndSortedProjects.length}
+            disabled={indexOfLastProject >= displayedProjects.length}
+            className="flex items-center gap-2"
           >
             Next
-            <ChevronRight className="h-4 w-4 ml-2" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
 
@@ -389,7 +447,7 @@ uted-foreground mb-2">Completed: {project.completionDate}</p>
                       <div>
                         <video
                           src={selectedProject.videoPreview}
-                          className="w-full aspect-video object-cover rounded-md"
+                          className="w-full aspect-video object-cover rounded-lg"
                           controls
                           loop
                           muted
@@ -398,24 +456,42 @@ uted-foreground mb-2">Completed: {project.completionDate}</p>
                       </div>
                       <div>
                         <p className="mb-4">{selectedProject.description}</p>
-                        <p className="mb-2"><strong>Impact:</strong> {selectedProject.impact}</p>
-                        <p className="mb-2"><strong>Challenges:</strong> {selectedProject.challenges}</p>
-                        <p className="mb-4"><strong>Achievements:</strong> {selectedProject.achievements}</p>
+                        <p className="mb-2">
+                          <strong>Impact:</strong> {selectedProject.impact}
+                        </p>
+                        <p className="mb-2">
+                          <strong>Challenges:</strong> {selectedProject.challenges}
+                        </p>
+                        <p className="mb-4">
+                          <strong>Achievements:</strong> {selectedProject.achievements}
+                        </p>
                         <div className="flex flex-wrap gap-2 mb-4">
                           {selectedProject.technologies.map((tech) => (
-                            <Badge key={tech} variant="outline">{tech}</Badge>
+                            <Badge key={tech} variant="outline">
+                              {tech}
+                            </Badge>
                           ))}
                         </div>
                         <div className="flex gap-4">
                           <Button asChild>
-                            <a href={selectedProject.github} target="_blank" rel="noopener noreferrer">
-                              <Github className="mr-2 h-4 w-4" /> GitHub
+                            <a 
+                              href={selectedProject.github} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2"
+                            >
+                              <Github className="h-4 w-4" /> GitHub
                             </a>
                           </Button>
                           {selectedProject.demo && (
                             <Button asChild variant="outline">
-                              <a href={selectedProject.demo} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
+                              <a 
+                                href={selectedProject.demo} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2"
+                              >
+                                <ExternalLink className="h-4 w-4" /> Live Demo
                               </a>
                             </Button>
                           )}
@@ -425,8 +501,13 @@ uted-foreground mb-2">Completed: {project.completionDate}</p>
                   </TabsContent>
                   <TabsContent value="gallery">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedProject.images.map((image, index) => (
-                        <img key={index} src={image} alt={`${selectedProject.title} screenshot ${index + 1}`} className="w-full h-auto rounded-md" />
+                      {selectedProject.images?.map((image, index) => (
+                        <img 
+                          key={index} 
+                          src={image} 
+                          alt={`${selectedProject.title} screenshot ${index + 1}`} 
+                          className="w-full h-auto rounded-lg"
+                        />
                       ))}
                     </div>
                   </TabsContent>
@@ -434,7 +515,7 @@ uted-foreground mb-2">Completed: {project.completionDate}</p>
                     <div className="aspect-video">
                       <iframe
                         src={selectedProject.demo}
-                        className="w-full h-full rounded-md"
+                        className="w-full h-full rounded-lg"
                         title={`${selectedProject.title} Interactive Demo`}
                       />
                     </div>
