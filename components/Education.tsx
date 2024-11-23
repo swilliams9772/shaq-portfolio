@@ -13,14 +13,39 @@ const educationData = [
     institution: 'City College of New York',
     location: 'New York, New York',
     period: '2015 - 2019',
-    details: 'Focus on Computational Physics and Data Science',
+    details: 'Focus on Computational Physics, Data Science, and Quantitative Analysis',
     gpa: '3.8',
     coursework: [
       { name: 'Machine Learning', grade: 'A' },
       { name: 'Data Structures', grade: 'A' },
       { name: 'Computational Physics', grade: 'A-' },
       { name: 'Network Science', grade: 'A' },
-      { name: 'Data Visualization', grade: 'A' }
+      { name: 'Data Visualization', grade: 'A' },
+      { name: 'Quantum Mechanics', grade: 'A' },
+      { name: 'Statistical Mechanics', grade: 'A' },
+      { name: 'Mathematical Physics', grade: 'A' },
+      { name: 'Differential Equations', grade: 'A' },
+      { name: 'Linear Algebra', grade: 'A' }
+    ],
+    research: [
+      {
+        title: 'Computational Physics Research',
+        description: 'Developed numerical methods for solving complex quantum mechanical systems',
+        outcomes: [
+          'Implemented Monte Carlo simulations for quantum systems',
+          'Created visualization tools for quantum phenomena',
+          'Published findings in undergraduate physics journal'
+        ]
+      },
+      {
+        title: 'Quantitative Analysis Project',
+        description: 'Applied statistical methods to analyze large datasets from particle physics experiments',
+        outcomes: [
+          'Processed terabytes of experimental data',
+          'Developed statistical models for particle detection',
+          'Created automated analysis pipelines'
+        ]
+      }
     ],
     achievements: [
       {
@@ -44,7 +69,51 @@ const educationData = [
       { name: 'Data Analysis', level: 95 },
       { name: 'Mathematical Modeling', level: 85 },
       { name: 'Research Methods', level: 90 },
-      { name: 'Problem Solving', level: 95 }
+      { name: 'Problem Solving', level: 95 },
+      { name: 'Quantum Mechanics', level: 85 },
+      { name: 'Statistical Analysis', level: 90 },
+      { name: 'Numerical Methods', level: 85 }
+    ],
+    publications: [
+      {
+        title: 'Numerical Solutions to Quantum Mechanical Systems',
+        journal: 'Undergraduate Physics Journal',
+        year: '2019'
+      },
+      {
+        title: 'Statistical Analysis of Particle Physics Data',
+        conference: 'Physics Student Conference',
+        year: '2018'
+      }
+    ],
+    specializations: [
+      {
+        area: 'Computational Physics',
+        topics: [
+          'Numerical Methods',
+          'Monte Carlo Simulations',
+          'Quantum Computing',
+          'High-Performance Computing'
+        ]
+      },
+      {
+        area: 'Mathematical Physics',
+        topics: [
+          'Differential Equations',
+          'Complex Analysis',
+          'Group Theory',
+          'Linear Algebra'
+        ]
+      },
+      {
+        area: 'Data Science',
+        topics: [
+          'Statistical Analysis',
+          'Machine Learning',
+          'Data Visualization',
+          'Big Data Processing'
+        ]
+      }
     ],
     color: 'from-blue-500/20 to-purple-500/20'
   }

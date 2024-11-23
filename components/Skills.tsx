@@ -12,76 +12,124 @@ import { Input } from '@/components/ui/input'
 
 const skillCategories = [
   {
-    category: 'Programming Languages',
+    category: 'Machine Learning & AI',
     skills: [
-      { name: 'Python', level: 'Expert', years: 5 },
-      { name: 'JavaScript', level: 'Expert', years: 4 },
-      { name: 'TypeScript', level: 'Expert', years: 3 },
-      { name: 'SQL', level: 'Advanced', years: 4 },
-      { name: 'Java', level: 'Intermediate', years: 2 },
-      { name: 'Go', level: 'Intermediate', years: 1 },
+      { name: 'Machine Learning', level: 'Expert', years: 4, endorsed: 15 },
+      { name: 'Deep Learning', level: 'Expert', years: 3, endorsed: 12 },
+      { name: 'NLP', level: 'Expert', years: 4, endorsed: 10 },
+      { name: 'Voice Cloning', level: 'Expert', years: 3, endorsed: 3 },
+      { name: 'Computer Vision', level: 'Advanced', years: 3, endorsed: 8 },
+      { name: 'Reinforcement Learning', level: 'Advanced', years: 2, endorsed: 6 },
+      { name: 'Generative AI', level: 'Expert', years: 3, endorsed: 9 },
+      { name: 'MLOps', level: 'Advanced', years: 3, endorsed: 7 },
     ],
-    icon: '💻',
+    icon: '🤖'
   },
   {
-    category: 'Frameworks & Libraries',
+    category: 'Programming & Development',
     skills: [
-      { name: 'TensorFlow', level: 'Expert', years: 3 },
-      { name: 'PyTorch', level: 'Expert', years: 3 },
-      { name: 'Scikit-Learn', level: 'Expert', years: 4 },
-      { name: 'Hugging Face', level: 'Advanced', years: 2 },
-      { name: 'OpenCV', level: 'Advanced', years: 3 },
-      { name: 'Flask', level: 'Advanced', years: 3 },
-      { name: 'Django', level: 'Advanced', years: 3 },
-      { name: 'React', level: 'Advanced', years: 3 },
-      { name: 'Node.js', level: 'Advanced', years: 3 },
+      { name: 'Python', level: 'Expert', years: 5, endorsed: 19 },
+      { name: 'C++', level: 'Advanced', years: 4, endorsed: 9 },
+      { name: 'JavaScript/TypeScript', level: 'Advanced', years: 3, endorsed: 7 },
+      { name: 'SQL', level: 'Advanced', years: 4, endorsed: 8 },
+      { name: 'R', level: 'Advanced', years: 3, endorsed: 7 },
+      { name: 'MATLAB', level: 'Expert', years: 4, endorsed: 12 },
+      { name: 'Julia', level: 'Intermediate', years: 2, endorsed: 4 },
     ],
-    icon: '🔧',
+    icon: '💻'
   },
   {
-    category: 'Cloud & DevOps',
+    category: 'AI Frameworks & Tools',
     skills: [
-      { name: 'AWS Lambda', level: 'Expert', years: 3 },
-      { name: 'AWS EC2', level: 'Expert', years: 3 },
-      { name: 'Docker', level: 'Expert', years: 4 },
-      { name: 'Kubernetes', level: 'Advanced', years: 3 },
-      { name: 'Terraform', level: 'Advanced', years: 2 },
-      { name: 'Jenkins', level: 'Intermediate', years: 2 },
+      { name: 'PyTorch', level: 'Expert', years: 3, endorsed: 4 },
+      { name: 'TensorFlow', level: 'Expert', years: 4, endorsed: 4 },
+      { name: 'Scikit-learn', level: 'Expert', years: 4, endorsed: 3 },
+      { name: 'Hugging Face', level: 'Expert', years: 2, endorsed: 2 },
+      { name: 'CUDA', level: 'Advanced', years: 2, endorsed: 2 },
+      { name: 'TensorRT', level: 'Advanced', years: 2, endorsed: 1 },
+      { name: 'MLflow', level: 'Advanced', years: 2, endorsed: 2 },
     ],
-    icon: '☁️',
+    icon: '🛠️'
   },
   {
-    category: 'AI & Machine Learning',
+    category: 'Data Science & Analytics',
     skills: [
-      { name: 'GANs', level: 'Expert', years: 3 },
-      { name: 'Reinforcement Learning', level: 'Expert', years: 3 },
-      { name: 'NLP', level: 'Expert', years: 4 },
-      { name: 'Voice Cloning', level: 'Advanced', years: 2 },
-      { name: 'Transformers', level: 'Advanced', years: 2 },
-      { name: 'Computer Vision', level: 'Advanced', years: 3 },
+      { name: 'Data Science', level: 'Expert', years: 5, endorsed: 16 },
+      { name: 'Data Analysis', level: 'Expert', years: 5, endorsed: 12 },
+      { name: 'Data Visualization', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Data Mining', level: 'Advanced', years: 3, endorsed: 3 },
+      { name: 'Business Intelligence', level: 'Advanced', years: 3, endorsed: 2 },
+      { name: 'Predictive Modeling', level: 'Expert', years: 4, endorsed: 4 },
+      { name: 'Big Data Processing', level: 'Advanced', years: 3, endorsed: 3 },
     ],
-    icon: '🤖',
+    icon: '📈'
   },
   {
-    category: 'Databases',
+    category: 'Cloud & Infrastructure',
     skills: [
-      { name: 'PostgreSQL', level: 'Expert', years: 4 },
-      { name: 'MySQL', level: 'Advanced', years: 3 },
-      { name: 'MongoDB', level: 'Advanced', years: 3 },
-      { name: 'Redis', level: 'Intermediate', years: 2 },
+      { name: 'AWS', level: 'Expert', years: 3, endorsed: 1 },
+      { name: 'GCP', level: 'Advanced', years: 2, endorsed: 1 },
+      { name: 'Docker', level: 'Expert', years: 3, endorsed: 3 },
+      { name: 'Kubernetes', level: 'Advanced', years: 2, endorsed: 2 },
+      { name: 'CI/CD', level: 'Advanced', years: 3, endorsed: 2 },
+      { name: 'Microservices', level: 'Advanced', years: 2, endorsed: 2 },
+      { name: 'DevOps', level: 'Advanced', years: 3, endorsed: 2 },
     ],
-    icon: '🗄️',
+    icon: '☁️'
   },
   {
-    category: 'Hardware & IoT',
+    category: 'Research & Analysis',
     skills: [
-      { name: 'Arduino', level: 'Advanced', years: 3 },
-      { name: 'Raspberry Pi', level: 'Advanced', years: 3 },
-      { name: 'RF Systems', level: 'Intermediate', years: 2 },
-      { name: 'Embedded Systems', level: 'Advanced', years: 3 },
+      { name: 'Research Methods', level: 'Expert', years: 5, endorsed: 10 },
+      { name: 'Experimental Design', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Scientific Writing', level: 'Expert', years: 4, endorsed: 7 },
+      { name: 'Literature Review', level: 'Expert', years: 5, endorsed: 6 },
+      { name: 'Grant Writing', level: 'Advanced', years: 3, endorsed: 5 },
+      { name: 'Peer Review', level: 'Advanced', years: 3, endorsed: 4 },
+      { name: 'Technical Documentation', level: 'Expert', years: 4, endorsed: 6 },
     ],
-    icon: '🔌',
+    icon: '📚'
   },
+  {
+    category: 'Tools & Technologies',
+    skills: [
+      { name: 'LaTeX', level: 'Expert', years: 5, endorsed: 8 },
+      { name: 'Git/GitHub', level: 'Expert', years: 4, endorsed: 9 },
+      { name: 'Linux/Unix', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'SolidWorks', level: 'Advanced', years: 3, endorsed: 7 },
+      { name: 'AutoCAD', level: 'Advanced', years: 3, endorsed: 7 },
+      { name: 'Arduino', level: 'Advanced', years: 3, endorsed: 8 },
+      { name: 'Raspberry Pi', level: 'Expert', years: 3, endorsed: 6 },
+    ],
+    icon: '🛠️'
+  },
+  {
+    category: 'Soft Skills',
+    skills: [
+      { name: 'Technical Writing', level: 'Expert', years: 5, endorsed: 9 },
+      { name: 'Public Speaking', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Project Management', level: 'Expert', years: 4, endorsed: 7 },
+      { name: 'Team Leadership', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Mentoring', level: 'Expert', years: 4, endorsed: 7 },
+      { name: 'Problem Solving', level: 'Expert', years: 5, endorsed: 10 },
+      { name: 'Critical Thinking', level: 'Expert', years: 5, endorsed: 9 },
+    ],
+    icon: '🤝'
+  },
+  {
+    category: 'Physics & Mathematics',
+    skills: [
+      { name: 'Quantum Mechanics', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Statistical Mechanics', level: 'Expert', years: 4, endorsed: 7 },
+      { name: 'Mathematical Physics', level: 'Expert', years: 4, endorsed: 8 },
+      { name: 'Differential Equations', level: 'Expert', years: 5, endorsed: 9 },
+      { name: 'Linear Algebra', level: 'Expert', years: 5, endorsed: 10 },
+      { name: 'Complex Analysis', level: 'Advanced', years: 4, endorsed: 7 },
+      { name: 'Group Theory', level: 'Advanced', years: 3, endorsed: 6 },
+      { name: 'Numerical Methods', level: 'Expert', years: 4, endorsed: 8 },
+    ],
+    icon: '🔬'
+  }
 ]
 
 const getLevelColor = (level: string) => {
